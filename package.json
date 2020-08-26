@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "ajv": "^6.12.4",
+    "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
     "history": "4.10.1",
     "immutable": "^4.0.0-rc.12",

@@ -21,18 +21,18 @@ class LoginForm extends React.Component {
     }
 
     onSubmit(values) {
-        console.log(values);
         return this.props.userLoginAttempt(values.username, values.password);
     }
 
     render() {
-        const {handleSubmit} = this.props;
+        const {handleSubmit, error} = this.props;
 
         return (
             <div className="text-center">
+                {error && <div className="alert alert-danger">{error}</div>}
                 <form action="" className="my-4" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                     <Field type="text" name="username" label="Username" component={renderField}></Field>
-                    <Field type="text" name="password" label="Password" component={renderField}></Field>
+                    <Field type="password" name="password" label="Password" component={renderField}></Field>
                     <button type="submit" className="btn btn-primary btn-big btn-block">Login</button>
                 </form>
             </div>

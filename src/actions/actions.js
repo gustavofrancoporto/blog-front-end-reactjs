@@ -7,12 +7,18 @@ import {
     BLOG_POST_LIST_REQUEST,
     BLOG_POST_RECEIVED,
     BLOG_POST_REQUEST,
-    BLOG_POST_UNLOAD,
+    BLOG_POST_UNLOAD, COMMENT_ADDED,
     COMMENT_LIST_ERROR,
     COMMENT_LIST_RECEIVED,
     COMMENT_LIST_REQUEST,
-    COMMENT_LIST_UNLOAD, USER_LOGIN_SUCCESS
+    COMMENT_LIST_UNLOAD,
+    USER_LOGIN_SUCCESS,
+    USER_PROFILE_ERROR,
+    USER_PROFILE_RECEIVED,
+    USER_PROFILE_REQUEST,
+    USER_SET_ID
 } from "./constants";
+import {SubmissionError} from "redux-form";
 
 export const blogPostListRequest = () => ({
     type: BLOG_POST_LIST_REQUEST,
@@ -96,11 +102,36 @@ export const commentListFetch = (id) => {
     }
 };
 
+export const commentAdd = (comment, blogPostId) => {
+    return (dispatch) => {
+        console.log('posting comment');
+        return request.post('/comments', {
+            content: comment,
+            blogPost: `/api/blog_posts/${blogPostId}`
+        }).then(
+            response => dispatch(commentAdded(response))
+        ).catch(error => {
+           throw new SubmissionError({
+               content: 'This is an error'
+           })
+        });
+    }
+};
+
+export const commentAdded = (comment) => ({
+    type: COMMENT_ADDED,
+    comment
+});
+
 export const userLoginAttempt = (username, password) => {
     return (dispatch) => {
         return request.post('/login_check', {username, password}, false)
-            .then(response => dispatch(userLoginSuccess(response.token, response.id)))
-            .catch(error => console.log('Login failed'))
+            .then(response => dispatch(userLoginSuccess(response.token, response.userId)))
+            .catch(error => {
+                throw new SubmissionError({
+                   _error: 'Username or password invalid'
+                });
+            })
     }
 };
 
@@ -111,3 +142,31 @@ export const userLoginSuccess = (token, userId) => {
         userId
     }
 };
+
+export const userSetId = (userId) => ({
+    type: USER_SET_ID,
+    userId
+});
+
+export const userProfileRequest = () => ({
+    type: USER_PROFILE_REQUEST,
+});
+
+export const userProfileError = () => ({
+    type: USER_PROFILE_ERROR,
+});
+
+export const userProfileReceived = (userId, userData) => ({
+    type: USER_PROFILE_RECEIVED,
+    userId,
+    userData
+});
+
+export const userProfileFetch = (userId) => {
+    return (dispatch) => {
+        dispatch(userProfileRequest())
+        return request.get(`/users/${userId}`, true).then(
+            response => dispatch(userProfileReceived(userId, response))
+        ).catch(error => dispatch(userProfileError()))
+    }
+} 
