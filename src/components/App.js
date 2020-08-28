@@ -6,14 +6,15 @@ import BlogPostListContainer from "./BlogPostListContainer";
 import BlogPostContainer from "./BlogPostContainer";
 import {request as requests} from "../agent";
 import {connect} from "react-redux";
-import {userProfileFetch, userSetId} from "../actions/actions";
+import {userLogout, userProfileFetch, userSetId} from "../actions/actions";
+import RegistrationContainer from "./RegistrationContainer";
 
 const mapStateToProps = state => ({
     ...state.auth
 });
 
 const mapDispatchToProps = {
-    userProfileFetch, userSetId
+    userProfileFetch, userSetId, userLogout
 };
 
 class App extends React.Component {
@@ -45,15 +46,16 @@ class App extends React.Component {
     }
 
     render() {
-        const {isAuthenticated, userData} = this.props;
+        const {isAuthenticated, userData, userLogout} = this.props;
 
         return (
             <div>
-                <Header isAuthenticated={isAuthenticated} userData={userData} />
+                <Header isAuthenticated={isAuthenticated} userData={userData} logout={userLogout} />
                 <Switch>
-                    <Route path="/" component={BlogPostListContainer} exact={true} />
                     <Route path="/login" component={LoginForm} />
                     <Route path="/blog-posts/:id" component={BlogPostContainer} />
+                    <Route path="/register" component={RegistrationContainer} />
+                    <Route path="/:page?" component={BlogPostListContainer} />
                 </Switch>
             </div>
         )

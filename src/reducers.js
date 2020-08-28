@@ -4,6 +4,7 @@ import auth from "./reducers/auth";
 import blogPostList from "./reducers/blogPostList";
 import blogPost from "./reducers/blogPost";
 import commentList from "./reducers/commentList";
+import registration from "./reducers/registration";
 import {reducer as formReducer} from 'redux-form';
 
 const createRootReducer = (history) => combineReducers({
@@ -11,6 +12,7 @@ const createRootReducer = (history) => combineReducers({
     blogPost,
     commentList,
     auth,
+    registration,
     router: connectRouter(history),
     form: formReducer
 });
